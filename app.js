@@ -11,8 +11,9 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user.js'); //passport shcema model
 
 //routes import
-const campgrounds = require("./routes/campgrounds.js");
-const reviews = require("./routes/reviews.js");
+const userRoutes = require("./routes/users.js");
+const campgroundsRoutes = require("./routes/campgrounds.js");
+const reviewRoutes = require("./routes/reviews.js");
 
 // ecrypte URL
 require("dotenv").config();
@@ -48,6 +49,7 @@ const sessionConfig = {
 };
 app.use(session(sessionConfig));
 app.use(flash());
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -63,9 +65,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/fakeUser", async (req, res) => {
+  const user = new User({email: 'test@gmail.com', username: 'userAurthtest'});
+  const newUser = await User.register(user, 'chicken');//it stores userdata and password(user, 'chiken')
+  res.send(newUser);
+});
+
 //imported routes
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+app.use("/", userRoutes);
+app.use("/campgrounds", campgroundsRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes);
 
 app.get("/", (req, res) => {
   res.render("home");
