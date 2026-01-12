@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const campgrounds = require('../controllers/campgrounds.js');
+const campgrounds = require("../controllers/campgrounds.js");
 const catchAsync = require("../utils/catchAsync");
 
-// stored middle wares in a file. 
+// stored middle wares in a file.
 const {
   isLoggedIn,
   isAuthor,
@@ -13,46 +13,34 @@ const {
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 
-router.get(
-  "/",
-  catchAsync(campgrounds.index));
-
+//route() organize the same prefix of path
+router
+  .route("/")
+  .get(catchAsync(campgrounds.index))
+  .post(
+    isLoggedIn,
+    validateCampground,
+    catchAsync(campgrounds.createCAmpground)
+  );
 
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
 
-router.post(
-  "/",
-  isLoggedIn,
-  validateCampground,
-  catchAsync(campgrounds.createCAmpground)
-);
-
-router.get(
-  "/:id",
-  isLoggedIn,
-  catchAsync(campgrounds.showCampground)
-);
+router
+  .route("/:id")
+  .get(isLoggedIn, catchAsync(campgrounds.showCampground))
+  .put(
+    isLoggedIn,
+    isAuthor,
+    validateCampground,
+    catchAsync(campgrounds.updateCampground)
+  )
+  .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampfround));
 
 router.get(
   "/:id/edit",
   isLoggedIn,
   isAuthor,
   catchAsync(campgrounds.renderEditForm)
-);
-
-router.put(
-  "/:id",
-  isLoggedIn,
-  isAuthor,
-  validateCampground,
-  catchAsync(campgrounds.updateCampground)
-);
-
-router.delete(
-  "/:id",
-  isLoggedIn,
-  isAuthor,
-  catchAsync(campgrounds.deleteCampfround)
 );
 
 module.exports = router;
