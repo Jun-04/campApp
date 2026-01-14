@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production"){
+  require('dotenv').config();
+}
+
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -16,7 +20,6 @@ const campgroundsRoutes = require("./routes/campgrounds.js");
 const reviewRoutes = require("./routes/reviews.js");
 
 // ecrypte URL
-require("dotenv").config();
 const DB_URI = process.env.DB_URI;
 mongoose.connect(DB_URI);
 

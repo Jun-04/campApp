@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const campgrounds = require("../controllers/campgrounds.js");
 const catchAsync = require("../utils/catchAsync");
-
+//image file upoad
+const multer =require('multer');
+const { storage } = require('../cloudinary/index.js');
+const upload = multer({storage});
 // stored middle wares in a file.
 const {
   isLoggedIn,
@@ -17,12 +20,11 @@ const Campground = require("../models/campground");
 router
   .route("/")
   .get(catchAsync(campgrounds.index))
-  .post(
-    isLoggedIn,
-    validateCampground,
-    catchAsync(campgrounds.createCAmpground)
-  );
-
+  //.post(isLoggedIn,validateCampground,catchAsync(campgrounds.createCAmpground));
+  .post(upload.array('image'), (req, res) => {
+    console.log(req.body, req.files);
+    res.send('Success');
+  })
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
 
 router
