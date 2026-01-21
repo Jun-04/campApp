@@ -2,7 +2,8 @@
 <div class="row">
     <h1>Edit Campground</h1>
     <div class="col-6 offset-3">
-    <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="validated-form">
+    <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="validated-form"
+      encrtype = "multipart/form-data">
         <div class="mb-3">
             <label class="form-label" for="title">Title</label>
             <input class="form-control" type="text" id="title"
@@ -16,9 +17,9 @@
               <div class="valid-feedback">Looks good!</div>
         </div>
          <div class="mb-3">
-           <label class="form-label" for="image">Image Url</label>
-           <input class="form-control" type="text" id="image"
-            name="campground[image]" value="<%= campground.image %>" required>
+           <label class="form-label" for="image">Add Image</label>
+           <input class="form-control" type="file" id="image"
+            name="image" required>
               <div class="valid-feedback">Looks good!</div>
         </div>   
       <div class="mb-3">
@@ -38,6 +39,13 @@
            name="campground[description]" required><%= campground.description %></textarea>
              <div class="valid-feedback">Looks good!</div>
         </div>
+        <div class="mb-3">
+          <% campground.images.forEach(function(img, i) { %> 
+            <img src="<%=img.url %>" class="img-thumbnail" alt="">
+            <input type="checkbox" id="image-<%=i%>"">
+             <% }) %>
+        </div> 
+        
         <div class="mb-3">
             <button class="btn btn-info">Update Campground</button>
         </div>

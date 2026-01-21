@@ -10,11 +10,17 @@ module.exports.renderNewForm = (req, res) => {
   res.render("campgrounds/new");
 };
 
-module.exports.createCAmpground = async (req, res, next) => {
-  // if(!req.body.campground) throw new ExpressError('invalid CampgroundData', 400);
+module.exports.createCampground = async (req, res, next) => {
   const campground = new Campground(req.body.campground);
+  campground.images = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
+
   campground.author = req.user._id;
   await campground.save();
+    //check the objetcs
+  console.log(campground);
   req.flash("success", "success to make a new campground");
   res.redirect(`/campgrounds/${campground._id}`);
 };
@@ -36,28 +42,34 @@ module.exports.showCampground = async (req, res) => {
 };
 
 module.exports.renderEditForm = async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id);
-    if (!campground) {
-      req.flash("error", "Can not find that campground");
-      return res.redirect("/campgrounds");
-    }
-    res.render("campgrounds/edit", { campground });
+  const { id } = req.params;
+  const campground = await Campground.findById(id);
+  if (!campground) {
+    req.flash("error", "Can not find that campground");
+    return res.redirect("/campgrounds");
   }
+  res.render("campgrounds/edit", { campground });
+};
 
-  module.exports.updateCampground = async (req, res) => {
-      const { id } = req.params;
-      const campground = await Campground.findByIdAndUpdate(id, {
-        ...req.body.campground,
-      });
-      req.flash("success", "Successfully updated campground");
-      res.redirect(`/campgrounds/${campground._id}`);
-    }
+module.exports.updateCampground = async (req, res) => {
+  const { id } = req.params;
+  const campground = await Campground.findByIdAndUpdate(id, {
+    ...req.body.campground,
+  });
+  const imgs = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
+    campground.images.push(...imgs);
+  await campground.save()
+  req.flash("success", "Successfully updated campground");
+  res.redirect(`/campgrounds/${campground._id}`);
+};
 
-    module.exports.deleteCampground = async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id);
-    await Campground.findByIdAndDelete(id);
-    req.flash("success", "Successfully deleted campground");
-    res.redirect("/campgrounds");
-  }
+module.exports.deleteCampground = async (req, res) => {
+  const { id } = req.params;
+  const campground = await Campground.findById(id);
+  await Campground.findByIdAndDelete(id);
+  req.flash("success", "Successfully deleted campground");
+  res.redirect("/campgrounds");
+};
