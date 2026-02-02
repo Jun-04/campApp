@@ -53,6 +53,7 @@
     </div>
 </div>
 <div class="col-6">
+  <div id="map"></div>
 <% if(currentUser){ %>
     <h2>Leave a Review</h2>
     <form
@@ -124,6 +125,13 @@
     <% } %>
   </div>
 </div>
+
+<%-"<script>"%>
+const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+const campground = <%- JSON.stringify(campground) %>;
+<%-"</script>"%>
+
+<script src="/javascripts/showPageMap.js"></script>
 
 <footer>
   <a href="/campgrounds">All Campgrounds</a>
