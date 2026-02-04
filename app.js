@@ -1,25 +1,25 @@
-if (process.env.NODE_ENV !== "production"){
-  require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 
-const mongoSanitize = require('./utils/mongoSanitizeV5.js');
+const mongoSanitize = require("./utils/mongoSanitizeV5.js");
 const express = require("express");
 const app = express();
 
-app.set('query parser', 'extended');
+app.set("query parser", "extended");
 
 const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
-const { MongoStore } = require('connect-mongo');
+const { MongoStore } = require("connect-mongo");
 const flash = require("connect-flash");
 const ExpressError = require("./utils/ExpressError");
 const methodOverride = require("method-override");
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const User = require('./models/user.js'); //passport shcema model
-const helmet = require('helmet')
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js"); //passport shcema model
+const helmet = require("helmet");
 
 //routes import
 const userRoutes = require("./routes/users.js");
@@ -47,16 +47,16 @@ app.use(mongoSanitize());
 
 //session
 const store = MongoStore.create({
-    mongoUrl: DB_URI,
-    touchAfter: 24 * 60 * 60,
-    crypto: {
-        secret: 'thisshouldbeabettersecret!'
-    }
+  mongoUrl: DB_URI,
+  touchAfter: 24 * 60 * 60,
+  crypto: {
+    secret: "thisshouldbeabettersecret!",
+  },
 });
 
 store.on("error", function (e) {
-    console.log("SESSION STORE ERROR", e)
-})
+  console.log("SESSION STORE ERROR", e);
+});
 
 const sessionConfig = {
   store: store,
@@ -77,47 +77,55 @@ app.use(flash());
 app.use(helmet());
 //configration for securitypolicy
 const scriptSrcUrls = [
-    "https://stackpath.bootstrapcdn.com/",
-    "https://kit.fontawesome.com/",
-    "https://cdnjs.cloudflare.com/",
-    "https://cdn.jsdelivr.net",
-    "https://cdn.maptiler.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://api.mapbox.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net",
+  "https://api.maptiler.com/",
 ];
 const styleSrcUrls = [
-    "https://kit-free.fontawesome.com/",
-    "https://stackpath.bootstrapcdn.com/",
-    "https://fonts.googleapis.com/",
-    "https://use.fontawesome.com/",
-    "https://cdn.jsdelivr.net",
-    "https://cdn.maptiler.com/", 
+  "https://kit-free.fontawesome.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.mapbox.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+  "https://cdn.jsdelivr.net",
+  "https://api.maptiler.com/",
 ];
 const connectSrcUrls = [
-    "https://api.maptiler.com/", 
+  "https://api.mapbox.com/",
+  "https://a.tiles.mapbox.com/",
+  "https://b.tiles.mapbox.com/",
+  "https://events.mapbox.com/",
+  "https://api.maptiler.com/",
+  "https://cdn.jsdelivr.net/",
 ];
 
 const fontSrcUrls = [];
 app.use(
-    helmet.contentSecurityPolicy({
-        directives: {
-            defaultSrc: [],
-            connectSrc: ["'self'", ...connectSrcUrls],
-            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
-            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
-            workerSrc: ["'self'", "blob:"],
-            childSrc: ["blob:"],
-            objectSrc: [],
-            imgSrc: [
-                "'self'",
-                "blob:",
-                "data:",
-                "https://res.cloudinary.com/dwwkvl9ay/", 
-                "https://images.unsplash.com",
-                "https://api.maptiler.com/",
-
-            ],
-            fontSrc: ["'self'", ...fontSrcUrls],
-        },
-    })
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      childSrc: ["blob:"],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        "blob:",
+        "data:",
+        "https://res.cloudinary.com/dwwkvl9ay/",
+        "https://images.unsplash.com",
+        "https://api.maptiler.com/",
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  }),
 );
 
 app.use(passport.initialize());
@@ -137,8 +145,8 @@ app.use((req, res, next) => {
 });
 
 app.get("/fakeUser", async (req, res) => {
-  const user = new User({email: 'test@gmail.com', username: 'userAurthtest'});
-  const newUser = await User.register(user, 'chicken');//it stores userdata and password(user, 'chiken')
+  const user = new User({ email: "test@gmail.com", username: "userAurthtest" });
+  const newUser = await User.register(user, "chicken"); //it stores userdata and password(user, 'chiken')
   res.send(newUser);
 });
 
