@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== "production") {
 const mongoSanitize = require("./utils/mongoSanitizeV5.js");
 const express = require("express");
 const app = express();
+app.set("trust proxy", 1);
 
 app.set("query parser", "extended");
 
