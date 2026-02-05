@@ -85,6 +85,7 @@ const scriptSrcUrls = [
   "https://cdnjs.cloudflare.com/",
   "https://cdn.jsdelivr.net",
   "https://api.maptiler.com/",
+   "https://cdn.maptiler.com/",
 ];
 const styleSrcUrls = [
   "https://kit-free.fontawesome.com/",
@@ -95,6 +96,7 @@ const styleSrcUrls = [
   "https://use.fontawesome.com/",
   "https://cdn.jsdelivr.net",
   "https://api.maptiler.com/",
+   "https://cdn.maptiler.com/",
 ];
 const connectSrcUrls = [
   "https://api.mapbox.com/",
@@ -103,6 +105,7 @@ const connectSrcUrls = [
   "https://events.mapbox.com/",
   "https://api.maptiler.com/",
   "https://cdn.jsdelivr.net/",
+   "https://cdn.maptiler.com/",
 ];
 
 const fontSrcUrls = [];
